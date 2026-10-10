@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'il.tochnit85.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'il.tochnit85.app'
+        minSdk 26
+        targetSdk 34
+        // every CI build gets a higher version so the phone accepts it as an update
+        versionCode((System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger())
+        versionName "1.0.${System.getenv('GITHUB_RUN_NUMBER') ?: '0'}"
+    }
+
+    // One fixed key, so every new build installs over the previous one and keeps your data.
+    signingConfigs {
+        app {
+            storeFile file('tochnit85.keystore')
+            storePassword 'tochnit85'
+            keyAlias 'tochnit85'
+            keyPassword 'tochnit85'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.app
+        }
+        debug {
+            signingConfig signingConfigs.app
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
